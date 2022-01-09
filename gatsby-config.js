@@ -9,28 +9,30 @@ require("dotenv").config({
 
 module.exports = {
   siteMetadata: {
-    title: `Gatsby WordPress Twenty Twenty`,
-    description: `Gatsby starter site for Twenty Twenty Gatsby Theme.`,
-    author: `@henrikwirth`,
+    title: `Gatsby WordPress Twenty Twenty Phour`,
+    description: `Gatsby starter site for Twenty Twenty Phour Gatsby Theme.`,
+    author: `@sgddesign`,
     siteUrl: process.env.SITE_URL,
   },
   plugins: [
-    `gatsby-plugin-image`,
-    `gatsby-plugin-notifications`,
-    `gatsby-plugin-sharp`,
-    {
-      resolve: `gatsby-source-filesystem`,
-      options: {
-        name: `images`,
-        path: `${__dirname}/src/assets/images`,
-      },
-    },
+    /**
+     * First up is the WordPress source plugin that connects Gatsby
+     * to your WordPress site.
+     *
+     * visit the plugin docs to learn more
+     * https://github.com/gatsbyjs/gatsby/blob/master/packages/gatsby-source-wordpress/README.md
+     *
+     */
     {
       resolve: `gatsby-source-wordpress`,
       options: {
-        url: process.env.WPGRAPHQL_URL,
-        verbose: true,
+        url: process.env.WPGRAPHQL_URL || `http://gatsbywp.test/graphql`,
+        schema: {
+          //Prefixes all WP Types with "Wp" so "Post and allPost" become "WpPost and allWpPost".
+          typePrefix: `Wp`,
+        },
         develop: {
+          // Caches media files outside of Gatsby's default cache an thus allows them to persist through a cache reset.
           hardCacheMediaFiles: true,
         },
         debug: {
@@ -47,13 +49,13 @@ module.exports = {
         // we don't need these fields
         excludeFieldNames: [`blocksJSON`, `saveContent`],
         type: {
-          Post: {
+          __all: {
             limit:
               process.env.NODE_ENV === `development`
                 ? // Lets just pull 50 posts in development to make it easy on ourselves.
-                  35
+                  50
                 : // And then we can pull all posts in production
-                  null,
+                  5000,
           },
           // this shows how to exclude entire types from the schema
           // this example is for wp-graphql-gutenberg
@@ -63,14 +65,79 @@ module.exports = {
         },
       },
     },
-    `gatsby-transformer-sharp`,
+    `gatsby-plugin-notifications`,
     {
-      resolve: "gatsby-plugin-react-svg",
+      resolve: `gatsby-source-filesystem`,
       options: {
-        rule: {
-          include: /\.inline\.svg$/, // See below to configure properly
+        name: `images`,
+        path: `${__dirname}/src/assets/images`,
+      },
+    },
+    /**
+     * The following two plugins are required if you want to use Gatsby image
+     * See https://www.gatsbyjs.com/docs/gatsby-image/#setting-up-gatsby-image
+     * if you're curious about it.
+     */
+    `gatsby-transformer-sharp`,
+    `gatsby-plugin-sharp`,
+    `gatsby-plugin-image`,
+    {
+      // See https://www.gatsbyjs.com/plugins/gatsby-plugin-manifest/?=gatsby-plugin-manifest
+      resolve: `gatsby-plugin-manifest`,
+      options: {
+        name: `Gatsby Starter WordPress Blog`,
+        short_name: `GatsbyJS & WP`,
+        start_url: `/`,
+        background_color: `#ffffff`,
+        theme_color: `#663399`,
+        display: `minimal-ui`,
+        icon: `content/assets/gatsby-icon.png`,
+      },
+    },
+
+    // See https://www.gatsbyjs.com/plugins/gatsby-plugin-react-helmet/?=gatsby-plugin-react-helmet
+    `gatsby-plugin-react-helmet`,
+    // Adds support for SASS
+    {
+      // See https://www.gatsbyjs.com/plugins/gatsby-plugin-sass
+      resolve: `gatsby-plugin-sass`,
+      options: {
+        useResolveUrlLoader: {
+          options: {
+            debug: true,
+            sourceMap: true, // default is false
+          },
         },
       },
     },
+    {
+      // see https://www.gatsbyjs.com/plugins/gatsby-plugin-react-svg/?=react-svg
+      resolve: "gatsby-plugin-react-svg",
+      options: {
+        rule: {
+          include: /\.inline\.svg$/,
+          // Unwanted SVG props can be removed with filters
+          omitKeys: [
+            "xmlnsDc",
+            "xmlnsCc",
+            "xmlnsRdf",
+            "xmlnsSvg",
+            "xmlnsSodipodi",
+            "xmlnsInkscape",
+          ],
+          ///OR
+          // filters: [
+          //   value => {
+          //     console.log(value)
+          //   },
+          // ],
+        },
+      },
+    },
+    /**
+     * this (optional) plugin enables Progressive Web App + Offline functionality
+     * To learn more, visit: https://gatsby.dev/offline
+     */
+    // `gatsby-plugin-offline`,
   ],
 }

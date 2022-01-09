@@ -68,7 +68,7 @@ Looking for more guidance? Full documentation for Gatsby lives [on the website](
 
 ## 🛠️ \*Modified Version
 
-Gatsby WP Blog Starter merged with Gatsby Starter WP Twenty Twenty Starter ( A port of the WordPress Twenty Twenty theme to Gatsby. )
+[Gatsby WP Blog Starter](https://github.com/gatsbyjs/gatsby-starter-wordpress-blog) merged with [Gatsby Starter WP Twenty Twenty Starter](https://github.com/henrikwirth/gatsby-starter-wordpress-twenty-twenty) ( A port of the WordPress Twenty Twenty theme to Gatsby. )
 
 #### WordPress Setup
 
