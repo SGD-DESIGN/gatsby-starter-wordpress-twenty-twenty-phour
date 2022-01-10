@@ -30,7 +30,10 @@ const PostPreview = ({ post, isLast }) => {
           </div>
         </header>
 
-        <FeaturedMedia image={post.featuredImage} />
+        <FeaturedMedia
+          image={post.featuredImage}
+          alt={post.featuredImage?.node?.alt}
+        />
 
         <div className="post-inner thin ">
           <div className="entry-content">

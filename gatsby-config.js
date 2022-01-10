@@ -36,12 +36,17 @@ module.exports = {
           hardCacheMediaFiles: true,
         },
         debug: {
+          preview: true, // display additional information in the terminal output about the running preview process
+          timeBuildSteps: true, // display how long each internal step took during the build process
           graphql: {
-            writeQueriesToDisk: true,
+            showQueryVarsOnError: true, // log out the query vars that were used in the query that returned GraphQL errors
+            showQueryOnError: true, // queries will be printed to the terminal output when the query returned errors.
+            writeQueriesToDisk: true, //
           },
         },
         html: {
-          fallbackImageMaxWidth: 800,
+          useGatsbyImage: true, // Causes the source plugin to find/replace images in html with Gatsby images.
+          fallbackImageMaxWidth: 800, // f a max width can't be inferred from html this value will be passed to Sharp. If the image is smaller than this, the image file's width will be used instead
         },
         // fields can be excluded globally.
         // this example is for wp-graphql-gutenberg.
@@ -50,6 +55,7 @@ module.exports = {
         excludeFieldNames: [`blocksJSON`, `saveContent`],
         type: {
           __all: {
+            // A special type setting which is applied to all types in the ingested schema.
             limit:
               process.env.NODE_ENV === `development`
                 ? // Lets just pull 50 posts in development to make it easy on ourselves.

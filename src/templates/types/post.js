@@ -8,6 +8,7 @@ import AuthorBio from "../../components/AuthorBio"
 import PostMeta from "../../components/PostMeta"
 import PostCategories from "../../components/PostCategories"
 import FeaturedMedia from "../../components/FeaturedMedia"
+import parse from "html-react-parser"
 
 const post = ({ data }) => {
   const { nextPage, previousPage, page } = data
@@ -15,9 +16,13 @@ const post = ({ data }) => {
     title,
     uri,
     content,
-    featuredImage,
     categories,
     excerpt,
+    featuredImage = {
+      data: page.featuredImage?.node?.localFile?.childImage.Sharp
+        ?.gatsbyImageData,
+      alt: page.featuredImage?.node?.alt || ``,
+    },
     databaseId,
     author,
     date,
@@ -27,7 +32,12 @@ const post = ({ data }) => {
     <Layout
       bodyClass={`post-template-default single single-post postid-${databaseId} single-format-standard wp-embed-responsive singular has-post-thumbnail has-single-pagination showing-comments footer-top-visible customize-support`}
     >
-      <Seo title={title} description={excerpt} socialImage={featuredImage?.node} uri={uri} />
+      <Seo
+        title={title}
+        description={excerpt}
+        socialImage={featuredImage?.node}
+        uri={uri}
+      />
 
       <article
         className={`post-${databaseId} post type-post status-publish format-standard has-post-thumbnail hentry category-uncategorized`}
@@ -36,25 +46,20 @@ const post = ({ data }) => {
         <header className="entry-header has-text-align-center header-footer-group">
           <div className="entry-header-inner section-inner medium">
             <PostCategories categories={categories} />
-            <h1
-              className="entry-title"
-              dangerouslySetInnerHTML={{ __html: title }}
-            />
-            <div
-              className="intro-text section-inner max-percentage small"
-              dangerouslySetInnerHTML={{ __html: excerpt }}
-            />
+            <h1 className="entry-title" itemProp="headline">
+              {parse(title)}
+            </h1>
+            <div className="intro-text section-inner max-percentage small">
+              {parse(excerpt)}
+            </div>
             <PostMeta title={title} author={author} date={date} />
           </div>
         </header>
 
-        <FeaturedMedia image={featuredImage} />
+        <FeaturedMedia image={featuredImage} alt={featuredImage.alt} />
 
         <div className="post-inner thin">
-          <div
-            className="entry-content"
-            dangerouslySetInnerHTML={{ __html: content }}
-          />
+          <div className="entry-content">{parse(content)}</div>
         </div>
 
         <div className="section-inner">
@@ -87,4 +92,4 @@ export const query = graphql`
   }
 `
 
-export default post;
+export default post

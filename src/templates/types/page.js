@@ -6,13 +6,29 @@ import FeaturedMedia from "../../components/FeaturedMedia"
 
 const page = ({ data }) => {
   const { page } = data
-  const { title, content, featuredImage, excerpt, databaseId, uri } = page
+  const {
+    title,
+    content,
+    featuredImage = {
+      data: page.featuredImage?.node?.localFile?.childImage.sharp
+        ?.gatsbyImageData,
+      alt: page.featuredImage?.node?.alt || ``,
+    },
+    excerpt,
+    databaseId,
+    uri,
+  } = page
 
   return (
     <Layout
       bodyClass={`page-template-default page page-id-${databaseId} wp-embed-responsive singular missing-post-thumbnail has-no-pagination not-showing-comments footer-top-visible customize-support`}
     >
-      <Seo title={title} description={excerpt} socialImage={featuredImage?.node} uri={uri} />
+      <Seo
+        title={title}
+        description={excerpt}
+        socialImage={featuredImage?.node}
+        uri={uri}
+      />
 
       <article
         className={`post-${databaseId} post page type-page status-publish hentry`}
@@ -27,7 +43,7 @@ const page = ({ data }) => {
           </div>
         </header>
 
-        <FeaturedMedia image={featuredImage} />
+        <FeaturedMedia image={featuredImage} alt={featuredImage.alt} />
 
         <div className="post-inner thin">
           <div
@@ -56,4 +72,4 @@ export const query = graphql`
   }
 `
 
-export default page;
+export default page
